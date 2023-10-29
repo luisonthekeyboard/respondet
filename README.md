@@ -3,6 +3,11 @@
 _Respondet?_, latin for "_Does it respond?_" is a program that monitors the availability of many websites over the
 network, produces metrics about them and stores these metrics.
 
+## How to run
+
+`./gradlew clean build start`
+
+
 ## Objective
 
 This is a toy project to play with new features from Java 21.
