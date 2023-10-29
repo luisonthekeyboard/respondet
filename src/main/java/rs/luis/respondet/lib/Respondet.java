@@ -3,32 +3,27 @@ package rs.luis.respondet.lib;
 import org.springframework.stereotype.Component;
 
 import java.util.Random;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 @Component
 public class Respondet {
 
     private static final long ONE_SECOND = 1000L;
-    private final ExecutorCompletionService<String> callService;
-    private final ExecutorService resultHandlerExecutor;
 
+    private final Caller caller;
     private final MonitoringManifest monitoringManifest;
+    private final Handler handler;
 
 
-    public Respondet(MonitoringManifest monitoringManifest) {
-        ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
-        this.callService = new ExecutorCompletionService<>(executor);
-        this.resultHandlerExecutor = Executors.newCachedThreadPool();
-
+    public Respondet(MonitoringManifest monitoringManifest, Caller caller, Handler handler) {
         this.monitoringManifest = monitoringManifest;
+        this.caller = caller;
+        this.handler = handler;
     }
 
     public void start() throws InterruptedException {
-        // Start the result handler
+        // Start result handler
         System.out.println("Starting ResultHandler...");
-        resultHandlerExecutor.execute(new ResultHandler(this.callService));
+        handler.start();
 
         // Setup of work to do
         System.out.println("Preparing call map...");
@@ -47,7 +42,7 @@ public class Respondet {
                     String url = monitoringManifest.getCallMap().get(interval);
                     System.out.printf("Scheduling the call to %s...%n", url);
 
-                    callService.submit(() -> fetchURL(url));
+                    caller.submit(() -> fetchURL(url));
                 }
             }
 

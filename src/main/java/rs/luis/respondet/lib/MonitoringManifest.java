@@ -7,7 +7,7 @@ import java.util.Map;
 @Repository
 public class MonitoringManifest {
 
-    private Map<Integer, String> callMap;
+    private final Map<Integer, String> callMap;
 
     public MonitoringManifest() {
         this.callMap = Map.of(
