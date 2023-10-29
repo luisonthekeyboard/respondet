@@ -2,61 +2,70 @@ package rs.luis.respondet;
 
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
-import org.springframework.shell.standard.ShellOption;
 
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.*;
 
 @ShellComponent
 public class Command {
 
-    private final ExecutorService executor;
-    private final ExecutorCompletionService<String> completionService;
-    private final ExecutorService threadyExecutor;
+    public static final long ONE_SECOND = 1000L;
+    public static final Map<Integer, String> CALL_MAP = Map.of(
+            11, "oracle.com",
+            7, "aws.amazon.com",
+            3, "github.com",
+            5, "lobste.rs",
+            27, "dev.java",
+            17, "java.com");
+    private final ExecutorCompletionService<String> callService;
+    private final ExecutorService resultHandlerExecutor;
 
     public Command() {
-        this.executor = Executors.newVirtualThreadPerTaskExecutor();
-        this.completionService = new ExecutorCompletionService<String>(executor);
-        this.threadyExecutor = Executors.newFixedThreadPool(7);
+        ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
+        this.callService = new ExecutorCompletionService<>(executor);
+        this.resultHandlerExecutor = Executors.newCachedThreadPool();
     }
 
-    @ShellMethod(key = "resp")
+    @ShellMethod(key = "start")
     public void resp() throws InterruptedException {
 
-        // Start a thready
-        System.out.println("Threadyyyyyyy");
-        threadyExecutor.execute(new Thready(this.completionService));
+        // Start the result handler
+        System.out.println("Starting ResultHandler...");
+        resultHandlerExecutor.execute(new ResultHandler(this.callService));
 
-        // Setup
-        System.out.println("Defining call map...");
-        var callMap = Map.of(11, "google.com", 7, "amazon.com", 1, "java.com");
-        var intervals = callMap.keySet();
+        // Setup of work to do
+        System.out.println("Preparing call map...");
+        var intervals = CALL_MAP.keySet();
 
         // Timings
-        System.out.println("Start the timers!");
+        System.out.println("Start the timers...");
         var startTime = System.currentTimeMillis() / 1000;
 
         while (true) {
             var currSecond = (System.currentTimeMillis() / 1000) - startTime;
-            System.out.println("Seconds passed: " + currSecond);
+            System.out.println("\n\n\n__________Seconds passed: " + currSecond);
 
             for (Integer interval : intervals) {
                 if (interval <= currSecond && currSecond % interval == 0) {
-                    String url = callMap.get(interval);
-                    System.out.printf("Make the call to %s!!!%n", url);
-                    completionService.submit(() -> fetchURL(url, interval));
+                    String url = CALL_MAP.get(interval);
+                    System.out.printf("Scheduling the call to %s...%n", url);
+
+                    callService.submit(() -> fetchURL(url));
                 }
             }
 
-            Thread.sleep(1000L);
+            Thread.sleep(ONE_SECOND);
         }
     }
 
-    private String fetchURL(String url, int interval) {
+    private String fetchURL(String url) {
         try {
-            Thread.sleep(interval * 1000L);
+            long sleepTime = new Random().nextLong(10_000L);
+            System.out.printf("........Sleeping for %d .......%n", sleepTime);
+            Thread.sleep(sleepTime);
+            System.out.printf("........Sleeping for %d ....... -- DONE -- %n", sleepTime);
         } catch (InterruptedException e) {
-            e.printStackTrace();
             throw new RuntimeException(e);
         }
         return url;
