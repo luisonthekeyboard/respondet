@@ -10,5 +10,4 @@ public class RespondetApplication {
 
 		SpringApplication.run(RespondetApplication.class, args);
 	}
-
 }

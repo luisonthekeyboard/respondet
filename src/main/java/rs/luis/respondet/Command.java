@@ -17,7 +17,7 @@ public class Command {
     public Command() {
         this.executor = Executors.newVirtualThreadPerTaskExecutor();
         this.completionService = new ExecutorCompletionService<String>(executor);
-        this.threadyExecutor = Executors.newFixedThreadPool(10);
+        this.threadyExecutor = Executors.newFixedThreadPool(7);
     }
 
     @ShellMethod(key = "hello-world")
@@ -28,7 +28,7 @@ public class Command {
     }
 
     @ShellMethod(key = "resp")
-    public String resp() throws InterruptedException {
+    public void resp() throws InterruptedException {
 
         // Start a thready
         System.out.println("Threadyyyyyyy");
@@ -57,26 +57,6 @@ public class Command {
 
             Thread.sleep(1000L);
         }
-
-//        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
-//
-//            var completionService = new ExecutorCompletionService<String>(executor);
-//
-//            for (String url : callMap.keySet()) {
-//                int interval = callMap.get(url);
-//
-//                completionService.submit(() -> fetchURL(url, interval));
-//            }
-//
-//            while (true) {
-//                Future<String> resultFuture = completionService.take();
-//                String result = resultFuture.get();
-//            }
-//
-//        } catch (ExecutionException | InterruptedException e) {
-//            e.printStackTrace();
-//        }
-
     }
 
     private String fetchURL(String url, int interval) {
