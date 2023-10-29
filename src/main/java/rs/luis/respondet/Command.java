@@ -20,13 +20,6 @@ public class Command {
         this.threadyExecutor = Executors.newFixedThreadPool(7);
     }
 
-    @ShellMethod(key = "hello-world")
-    public String helloWorld(
-            @ShellOption(defaultValue = "spring") String arg
-    ) {
-        return "Hello world " + arg;
-    }
-
     @ShellMethod(key = "resp")
     public void resp() throws InterruptedException {
 
