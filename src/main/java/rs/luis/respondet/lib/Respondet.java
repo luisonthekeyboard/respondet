@@ -1,42 +1,38 @@
-package rs.luis.respondet;
+package rs.luis.respondet.lib;
 
-import org.springframework.shell.standard.ShellComponent;
-import org.springframework.shell.standard.ShellMethod;
+import org.springframework.stereotype.Component;
 
-import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-@ShellComponent
-public class Command {
+@Component
+public class Respondet {
 
-    public static final long ONE_SECOND = 1000L;
-    public static final Map<Integer, String> CALL_MAP = Map.of(
-            11, "oracle.com",
-            7, "aws.amazon.com",
-            3, "github.com",
-            5, "lobste.rs",
-            27, "dev.java",
-            17, "java.com");
+    private static final long ONE_SECOND = 1000L;
     private final ExecutorCompletionService<String> callService;
     private final ExecutorService resultHandlerExecutor;
 
-    public Command() {
+    private final MonitoringManifest monitoringManifest;
+
+
+    public Respondet(MonitoringManifest monitoringManifest) {
         ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
         this.callService = new ExecutorCompletionService<>(executor);
         this.resultHandlerExecutor = Executors.newCachedThreadPool();
+
+        this.monitoringManifest = monitoringManifest;
     }
 
-    @ShellMethod(key = "start")
-    public void resp() throws InterruptedException {
-
+    public void start() throws InterruptedException {
         // Start the result handler
         System.out.println("Starting ResultHandler...");
         resultHandlerExecutor.execute(new ResultHandler(this.callService));
 
         // Setup of work to do
         System.out.println("Preparing call map...");
-        var intervals = CALL_MAP.keySet();
+        var intervals = monitoringManifest.getCallMap().keySet();
 
         // Timings
         System.out.println("Start the timers...");
@@ -48,7 +44,7 @@ public class Command {
 
             for (Integer interval : intervals) {
                 if (interval <= currSecond && currSecond % interval == 0) {
-                    String url = CALL_MAP.get(interval);
+                    String url = monitoringManifest.getCallMap().get(interval);
                     System.out.printf("Scheduling the call to %s...%n", url);
 
                     callService.submit(() -> fetchURL(url));
@@ -70,5 +66,5 @@ public class Command {
         }
         return url;
     }
-}
 
+}

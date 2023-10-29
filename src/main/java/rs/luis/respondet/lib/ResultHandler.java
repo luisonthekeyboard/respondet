@@ -1,4 +1,4 @@
-package rs.luis.respondet;
+package rs.luis.respondet.lib;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorCompletionService;
