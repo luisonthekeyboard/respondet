@@ -5,9 +5,20 @@ import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 
 import java.util.Map;
+import java.util.concurrent.*;
 
 @ShellComponent
 public class Command {
+
+    private final ExecutorService executor;
+    private final ExecutorCompletionService<String> completionService;
+    private final ExecutorService threadyExecutor;
+
+    public Command() {
+        this.executor = Executors.newVirtualThreadPerTaskExecutor();
+        this.completionService = new ExecutorCompletionService<String>(executor);
+        this.threadyExecutor = Executors.newFixedThreadPool(10);
+    }
 
     @ShellMethod(key = "hello-world")
     public String helloWorld(
@@ -19,23 +30,32 @@ public class Command {
     @ShellMethod(key = "resp")
     public String resp() throws InterruptedException {
 
-        // Setup
+        // Start a thready
+        System.out.println("Threadyyyyyyy");
+        threadyExecutor.execute(new Thready(this.completionService));
 
+        // Setup
         System.out.println("Defining call map...");
         var callMap = Map.of(11, "google.com", 7, "amazon.com", 1, "java.com");
         var intervals = callMap.keySet();
 
+        // Timings
+        System.out.println("Start the timers!");
         var startTime = System.currentTimeMillis() / 1000;
 
         while (true) {
             var currSecond = (System.currentTimeMillis() / 1000) - startTime;
             System.out.println("Seconds passed: " + currSecond);
-            Thread.sleep(1000L);
+
             for (Integer interval : intervals) {
                 if (interval <= currSecond && currSecond % interval == 0) {
-                    System.out.printf("Make the call to %s!!!%n", callMap.get(interval));
+                    String url = callMap.get(interval);
+                    System.out.printf("Make the call to %s!!!%n", url);
+                    completionService.submit(() -> fetchURL(url, interval));
                 }
             }
+
+            Thread.sleep(1000L);
         }
 
 //        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
@@ -66,7 +86,7 @@ public class Command {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-        System.out.println(url);
         return url;
     }
 }
+
