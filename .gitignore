@@ -26,3 +26,5 @@ replay_pid*
 # By Luís
 target
 .idea
+spring-shell.log
+.gradle
