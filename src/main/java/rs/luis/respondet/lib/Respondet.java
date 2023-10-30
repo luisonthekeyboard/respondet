@@ -4,13 +4,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.util.Set;
+
 @Component
 public class Respondet {
 
     private static final long ONE_SECOND = 1000L;
     private final Caller caller;
-    private final MonitoringManifest monitoringManifest;
     private final Handler handler;
+    private final MonitoringManifest monitoringManifest;
+
     private final Logger logger = LoggerFactory.getLogger(Respondet.class);
 
 
@@ -38,10 +41,10 @@ public class Respondet {
 
             for (Integer interval : intervals) {
                 if (interval <= currSecond && currSecond % interval == 0) {
-                    String url = monitoringManifest.getCallMap().get(interval);
-                    logger.debug("Scheduling the call to %s...%n".formatted(url));
-
-                    caller.submit(new HttpTask(url));
+                    for (String url : monitoringManifest.getCallMap().get(interval)){
+                        logger.debug("Scheduling the call to %s...%n".formatted(url));
+                        caller.submit(new HttpTask(url));
+                    }
                 }
             }
 

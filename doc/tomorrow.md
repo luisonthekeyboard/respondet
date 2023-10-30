@@ -2,7 +2,8 @@
 
 ## For October 30
 
+- write results to database
 - tests
-- read from file and parse it
 - @Async????
 - Also, events?!?!?!
+- proper exception handling
