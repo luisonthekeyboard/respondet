@@ -1,5 +1,7 @@
 package rs.luis.respondet.lib;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.Random;
@@ -8,10 +10,10 @@ import java.util.Random;
 public class Respondet {
 
     private static final long ONE_SECOND = 1000L;
-
     private final Caller caller;
     private final MonitoringManifest monitoringManifest;
     private final Handler handler;
+    private final Logger logger = LoggerFactory.getLogger(Respondet.class);
 
 
     public Respondet(MonitoringManifest monitoringManifest, Caller caller, Handler handler) {
@@ -22,25 +24,25 @@ public class Respondet {
 
     public void start() throws InterruptedException {
         // Start result handler
-        System.out.println("Starting ResultHandler...");
+        logger.info("Starting ResultHandler...");
         handler.start();
 
         // Setup of work to do
-        System.out.println("Preparing call map...");
+        logger.info("Preparing call map...");
         var intervals = monitoringManifest.getCallMap().keySet();
 
         // Timings
-        System.out.println("Start the timers...");
+        logger.info("Starting the timers...");
         var startTime = System.currentTimeMillis() / 1000;
 
         while (true) {
             var currSecond = (System.currentTimeMillis() / 1000) - startTime;
-            System.out.println("\n\n\n__________Seconds passed: " + currSecond);
+            logger.debug("\n\n\n__________Seconds passed: " + currSecond);
 
             for (Integer interval : intervals) {
                 if (interval <= currSecond && currSecond % interval == 0) {
                     String url = monitoringManifest.getCallMap().get(interval);
-                    System.out.printf("Scheduling the call to %s...%n", url);
+                    logger.debug("Scheduling the call to %s...%n".formatted(url));
 
                     caller.submit(() -> fetchURL(url));
                 }
@@ -53,9 +55,9 @@ public class Respondet {
     private String fetchURL(String url) {
         try {
             long sleepTime = new Random().nextLong(10_000L);
-            System.out.printf("........Sleeping for %d .......%n", sleepTime);
+            logger.debug("........Sleeping for %d .......%n".formatted(sleepTime));
             Thread.sleep(sleepTime);
-            System.out.printf("........Sleeping for %d ....... -- DONE -- %n", sleepTime);
+            logger.debug("........Sleeping for %d ....... -- DONE -- %n".formatted(sleepTime));
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

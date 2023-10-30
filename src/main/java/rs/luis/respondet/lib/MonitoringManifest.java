@@ -17,7 +17,6 @@ public class MonitoringManifest {
                 5, "lobste.rs",
                 27, "dev.java",
                 17, "java.com");
-
     }
 
     public Map<Integer, String> getCallMap() {
