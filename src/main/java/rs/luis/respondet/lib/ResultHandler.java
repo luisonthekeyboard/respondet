@@ -21,8 +21,6 @@ public class ResultHandler implements Runnable {
 
     public void run() {
 
-
-
         while (true) {
             try {
                 String result = this.caller.getCallService().take().get();

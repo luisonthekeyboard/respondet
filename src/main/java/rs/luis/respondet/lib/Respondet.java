@@ -44,24 +44,11 @@ public class Respondet {
                     String url = monitoringManifest.getCallMap().get(interval);
                     logger.debug("Scheduling the call to %s...%n".formatted(url));
 
-                    caller.submit(() -> fetchURL(url));
+                    caller.submit(new HttpTask(url));
                 }
             }
 
             Thread.sleep(ONE_SECOND);
         }
     }
-
-    private String fetchURL(String url) {
-        try {
-            long sleepTime = new Random().nextLong(10_000L);
-            logger.debug("........Sleeping for %d .......%n".formatted(sleepTime));
-            Thread.sleep(sleepTime);
-            logger.debug("........Sleeping for %d ....... -- DONE -- %n".formatted(sleepTime));
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        return url;
-    }
-
 }
