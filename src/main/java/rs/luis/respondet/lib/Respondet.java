@@ -4,8 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.util.Random;
-
 @Component
 public class Respondet {
 
@@ -23,7 +21,6 @@ public class Respondet {
     }
 
     public void start() throws InterruptedException {
-        // Start result handler
         logger.info("Starting ResultHandler...");
         handler.start();
 
@@ -37,7 +34,7 @@ public class Respondet {
 
         while (true) {
             var currSecond = (System.currentTimeMillis() / 1000) - startTime;
-            logger.debug("\n\n\n__________Seconds passed: " + currSecond);
+            logger.debug("____________________Seconds passed: " + currSecond);
 
             for (Integer interval : intervals) {
                 if (interval <= currSecond && currSecond % interval == 0) {

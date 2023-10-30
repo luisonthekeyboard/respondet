@@ -11,12 +11,12 @@ public class MonitoringManifest {
 
     public MonitoringManifest() {
         this.callMap = Map.of(
-                11, "oracle.com",
-                7, "aws.amazon.com",
-                3, "github.com",
-                5, "lobste.rs",
-                27, "dev.java",
-                17, "java.com");
+                11, "https://oracle.com",
+                7, "https://aws.amazon.com",
+                3, "https://github.com",
+                33, "https://lobste.rs",
+                27, "https://dev.java",
+                17, "https://java.com");
     }
 
     public Map<Integer, String> getCallMap() {

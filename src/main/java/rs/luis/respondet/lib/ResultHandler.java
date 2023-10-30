@@ -1,5 +1,6 @@
 package rs.luis.respondet.lib;
 
+import org.apache.hc.core5.http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,7 @@ import java.util.concurrent.ExecutionException;
 @Component
 public class ResultHandler implements Runnable {
 
-    private Logger logger = LoggerFactory.getLogger(ResultHandler.class);
+    private final Logger logger = LoggerFactory.getLogger(ResultHandler.class);
 
     private final Caller caller;
 
@@ -23,8 +24,8 @@ public class ResultHandler implements Runnable {
 
         while (true) {
             try {
-                String result = this.caller.getCallService().take().get();
-                logger.debug("-------> Result from thread execution: %s%n".formatted(result));
+                HttpResponse httpResponse = this.caller.getCallService().take().get();
+                logger.debug("<<< %d >>>%n".formatted(httpResponse.getCode()));
 
             } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException(e);
