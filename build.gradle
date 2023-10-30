@@ -40,5 +40,8 @@ tasks.register('start', Exec) {
 
 
 tasks.named('test') {
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
     useJUnitPlatform()
 }
