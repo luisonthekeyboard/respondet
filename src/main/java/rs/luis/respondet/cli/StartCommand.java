@@ -10,21 +10,19 @@ import rs.luis.respondet.lib.Respondet;
 import java.io.IOException;
 
 @ShellComponent
-public class Command {
+public class StartCommand {
 
     private final Respondet respondet;
     private final MonitoringManifest monitoringManifest;
 
     @Autowired
-    public Command(Respondet respondet, MonitoringManifest monitoringManifest) {
+    public StartCommand(Respondet respondet, MonitoringManifest monitoringManifest) {
         this.respondet = respondet;
         this.monitoringManifest = monitoringManifest;
     }
 
     @ShellMethod(key = "start")
-    public void resp(
-            @Option(required = true) String manifestFile
-    ) throws InterruptedException, IOException {
+    public void start(@Option(required = true) String manifestFile) throws InterruptedException, IOException {
 
         this.monitoringManifest.readFromCSV(manifestFile);
         respondet.start();
