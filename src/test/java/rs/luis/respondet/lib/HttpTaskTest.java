@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class HttpTaskTest {
 
-    private final Logger logger = LoggerFactory.getLogger(Respondet.class);
+    private final Logger logger = LoggerFactory.getLogger(HttpTaskTest.class);
     private String randomString;
     private Request req;
     private Response response;

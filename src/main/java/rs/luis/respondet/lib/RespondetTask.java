@@ -5,9 +5,8 @@ import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.Set;
-import java.util.TimerTask;
 
-public class RespondetTask extends TimerTask {
+public class RespondetTask implements  Runnable {
     private final Logger logger = LoggerFactory.getLogger(RespondetTask.class);
     private final Caller caller;
     private final Set<String> urls;

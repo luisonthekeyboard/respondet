@@ -1,4 +1,4 @@
-package rs.luis.respondet;
+package rs.luis.respondet.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,15 +17,13 @@ import java.util.Objects;
 import java.util.concurrent.Executors;
 
 @Configuration
-public class DynamicSchedulingConfig implements SchedulingConfigurer {
-
-    private final Logger logger = LoggerFactory.getLogger(DynamicSchedulingConfig.class);
-
+public class CallExecutorConfig implements SchedulingConfigurer {
+    private final Logger logger = LoggerFactory.getLogger(CallExecutorConfig.class);
     private final MonitoringManifest monitoringManifest;
     private final Caller caller;
 
     @Autowired
-    public DynamicSchedulingConfig(MonitoringManifest monitoringManifest, Caller caller) {
+    public CallExecutorConfig(MonitoringManifest monitoringManifest, Caller caller) {
         this.monitoringManifest = monitoringManifest;
         this.caller = caller;
     }

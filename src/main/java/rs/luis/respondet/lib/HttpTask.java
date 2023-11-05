@@ -10,7 +10,7 @@ import java.util.concurrent.Callable;
 
 public class HttpTask implements Callable<HttpResponse> {
 
-    private final Logger logger = LoggerFactory.getLogger(Respondet.class);
+    private final Logger logger = LoggerFactory.getLogger(HttpTask.class);
 
     private final String url;
 

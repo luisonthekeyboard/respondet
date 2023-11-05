@@ -21,7 +21,7 @@ public class MonitoringManifest {
 
     private Map<Integer, Set<String>> callMap;
 
-    public MonitoringManifest(@Value("${test.foo}") String file) {
+    public MonitoringManifest(@Value("${monitoring_manifest}") String file) {
         callMap = new HashMap<>();
         try {
             readFromCSV(file);

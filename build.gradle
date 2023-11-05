@@ -37,7 +37,7 @@ tasks.register('start', Exec) {
     workingDir './'
     commandLine 'java',
             '-jar', 'build/libs/respondet-0.0.1-SNAPSHOT.jar',
-            '--test.foo=src/main/resources/to_monitor.csv'
+            '--monitoring_manifest=src/main/resources/to_monitor.csv'
     standardInput System.in
 }
 
