@@ -4,12 +4,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.util.Set;
+import java.util.Optional;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class Respondet {
 
-    private static final long ONE_SECOND = 1000L;
     private final Caller caller;
     private final Handler handler;
     private final MonitoringManifest monitoringManifest;
@@ -30,25 +32,24 @@ public class Respondet {
         // Setup of work to do
         logger.info("Preparing call map...");
         var intervals = monitoringManifest.getCallMap().keySet();
+        long max = intervals.stream().max(Integer::compareTo).orElse(1) * 1000L;
+
 
         // Timings
-        logger.info("Starting the timers...");
-        var startTime = System.currentTimeMillis() / 1000;
+        try (ScheduledExecutorService executor = Executors.newScheduledThreadPool(monitoringManifest.getCallMap().size())) {
 
-        while (true) {
-            var currSecond = (System.currentTimeMillis() / 1000) - startTime;
-            logger.debug("____________________Seconds passed: " + currSecond);
-
+            logger.info("Starting the timers...");
             for (Integer interval : intervals) {
-                if (interval <= currSecond && currSecond % interval == 0) {
-                    for (String url : monitoringManifest.getCallMap().get(interval)){
-                        logger.debug("Scheduling the call to %s...%n".formatted(url));
-                        caller.submit(new HttpTask(url));
-                    }
-                }
+                executor.scheduleAtFixedRate(
+                        new RespondetTask(caller, monitoringManifest.getCallMap().get(interval)),
+                        interval,
+                        interval,
+                        TimeUnit.SECONDS);
             }
 
-            Thread.sleep(ONE_SECOND);
+            while (!executor.isTerminated()) {
+                Thread.sleep(max);
+            }
         }
     }
 }

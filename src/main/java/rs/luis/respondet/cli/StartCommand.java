@@ -23,7 +23,6 @@ public class StartCommand {
 
     @ShellMethod(key = "start")
     public void start(@Option(required = true) String manifestFile) throws InterruptedException, IOException {
-
         this.monitoringManifest.readFromCSV(manifestFile);
         respondet.start();
     }
