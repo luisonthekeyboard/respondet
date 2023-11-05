@@ -9,8 +9,8 @@ import java.util.TimerTask;
 
 public class RespondetTask extends TimerTask {
     private final Logger logger = LoggerFactory.getLogger(RespondetTask.class);
-    private Caller caller;
-    private Set<String> urls;
+    private final Caller caller;
+    private final Set<String> urls;
 
     public RespondetTask(Caller caller, Set<String> urls) {
         this.caller = caller;
@@ -19,14 +19,10 @@ public class RespondetTask extends TimerTask {
 
     @Override
     public void run() {
-
         logger.debug("____________________ Current seconds: " + LocalDateTime.now());
-
         for (String url : urls) {
             logger.debug("Scheduling the call to %s...%n".formatted(url));
             caller.submit(new HttpTask(url));
         }
     }
-
-
 }

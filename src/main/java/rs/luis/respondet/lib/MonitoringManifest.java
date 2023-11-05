@@ -2,6 +2,7 @@ package rs.luis.respondet.lib;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 
@@ -20,8 +21,13 @@ public class MonitoringManifest {
 
     private Map<Integer, Set<String>> callMap;
 
-    public MonitoringManifest() {
+    public MonitoringManifest(@Value("${test.foo}") String file) {
         callMap = new HashMap<>();
+        try {
+            readFromCSV(file);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Map<Integer, Set<String>> getCallMap() {

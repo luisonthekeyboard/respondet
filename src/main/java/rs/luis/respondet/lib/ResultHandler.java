@@ -21,7 +21,6 @@ public class ResultHandler implements Runnable {
     }
 
     public void run() {
-
         while (true) {
             try {
                 HttpResponse httpResponse = this.caller.getCallService().take().get();
