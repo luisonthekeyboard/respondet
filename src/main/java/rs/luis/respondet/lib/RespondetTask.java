@@ -8,11 +8,11 @@ import java.util.Set;
 
 public class RespondetTask implements  Runnable {
     private final Logger logger = LoggerFactory.getLogger(RespondetTask.class);
-    private final Caller caller;
+    private final Respondet respondet;
     private final Set<String> urls;
 
-    public RespondetTask(Caller caller, Set<String> urls) {
-        this.caller = caller;
+    public RespondetTask(Respondet respondet, Set<String> urls) {
+        this.respondet = respondet;
         this.urls = urls;
     }
 
@@ -21,7 +21,7 @@ public class RespondetTask implements  Runnable {
         logger.debug("____________________ Current seconds: " + LocalDateTime.now());
         for (String url : urls) {
             logger.debug("Scheduling the call to %s...%n".formatted(url));
-            caller.submit(new HttpTask(url));
+            respondet.submit(new HttpTask(url));
         }
     }
 }

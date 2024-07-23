@@ -8,7 +8,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import rs.luis.respondet.lib.Caller;
+import rs.luis.respondet.lib.Respondet;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -17,18 +17,14 @@ import java.util.concurrent.Future;
 @SpringBootApplication
 public class Main implements CommandLineRunner {
     private final Logger logger = LoggerFactory.getLogger(Main.class);
-
-    private final Caller caller;
-
+    private final Respondet respondet;
 
     @Autowired
-    public Main(Caller caller) {
-        this.caller = caller;
+    public Main(Respondet respondet) {
+        this.respondet = respondet;
     }
 
     public static void main(String[] args) {
-        Thread printingHook = new Thread(() -> System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH........................"));
-        Runtime.getRuntime().addShutdownHook(printingHook);
         SpringApplication.run(Main.class, args);
     }
 
@@ -37,7 +33,7 @@ public class Main implements CommandLineRunner {
         logger.info("Starting ResultHandler...");
 
         Future<HttpResponse> f;
-        while ((f = caller.getCallService().take()) != null) {
+        while ((f = respondet.getCallService().take()) != null) {
 
             HttpResponse httpResponse = f.get();
             logger.debug("<<< %d >>>%n".formatted(httpResponse.getCode()));

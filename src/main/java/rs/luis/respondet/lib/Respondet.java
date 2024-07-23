@@ -8,11 +8,11 @@ import java.util.concurrent.*;
 
 @Service
 @Scope("singleton")
-public class Caller {
+public class Respondet {
 
     private final ExecutorCompletionService<HttpResponse> callService;
 
-    public Caller() {
+    public Respondet() {
         ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
         this.callService = new ExecutorCompletionService<>(executor);
     }

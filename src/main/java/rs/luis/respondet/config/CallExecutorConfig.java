@@ -8,7 +8,7 @@ import org.springframework.scheduling.Trigger;
 import org.springframework.scheduling.TriggerContext;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
-import rs.luis.respondet.lib.Caller;
+import rs.luis.respondet.lib.Respondet;
 import rs.luis.respondet.lib.MonitoringManifest;
 import rs.luis.respondet.lib.RespondetTask;
 
@@ -20,14 +20,13 @@ import java.util.concurrent.Executors;
 public class CallExecutorConfig implements SchedulingConfigurer {
     private final Logger logger = LoggerFactory.getLogger(CallExecutorConfig.class);
     private final MonitoringManifest monitoringManifest;
-    private final Caller caller;
+    private final Respondet respondet;
 
     @Autowired
-    public CallExecutorConfig(MonitoringManifest monitoringManifest, Caller caller) {
+    public CallExecutorConfig(MonitoringManifest monitoringManifest, Respondet respondet) {
         this.monitoringManifest = monitoringManifest;
-        this.caller = caller;
+        this.respondet = respondet;
     }
-
 
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
@@ -37,7 +36,7 @@ public class CallExecutorConfig implements SchedulingConfigurer {
         logger.info("Starting the timers...");
         for (Integer interval : intervals) {
             taskRegistrar.addTriggerTask(
-                    new RespondetTask(caller, monitoringManifest.getCallMap().get(interval)),
+                    new RespondetTask(respondet, monitoringManifest.getCallMap().get(interval)),
                     new ExecutionInterval(interval));
         }
     }
